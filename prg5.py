@@ -1,0 +1,29 @@
+# Program 5 (KNN)
+
+import numpy as np
+from sklearn.neighbors import KNeighborsClassifier
+
+
+# random data
+np.random.seed(42)
+
+x = np.random.rand(100).reshape(-1, 1)
+print(x)
+
+print("Results")
+
+for k in [1, 2, 3, 4, 5, 20, 30]:
+
+    model = KNeighborsClassifier(n_neighbors=k)
+
+    # train using first 50 values
+    model.fit(
+        x[:50],
+        np.where(x[:50, 0] <= 0.5, 1, 2)
+    )
+
+    # predict next 50
+    y_pred = model.predict(x[50:])
+
+    print(f"\nk = {k}")
+    print("predicted_classes =", y_pred)

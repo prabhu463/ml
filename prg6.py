@@ -1,0 +1,29 @@
+# 6 Locally Weighted Regression
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Data
+np.random.seed(42)
+X = np.linspace(0, 10, 100)[:, None]
+y = np.sin(X).ravel() + np.random.normal(0, 0.2, 100)
+
+# LWR
+def lwr(X, y, xq, tau):
+    W = np.diag(np.exp(-((X - xq)**2).ravel() / (2 * tau**2)))
+    Xb = np.c_[np.ones(len(X)), X]
+    theta = np.linalg.inv(Xb.T @ W @ Xb) @ Xb.T @ W @ y
+    return np.array([1, xq]) @ theta
+
+# Prediction
+tau = 0.5
+y_pred = np.array([lwr(X, y, x, tau) for x in X.ravel()])
+
+# Plot
+plt.scatter(X, y, label="Data Points", s=10)
+plt.plot(X, y_pred, 'r', label=f"LWR (tau={tau})")
+plt.xlabel("X")
+plt.ylabel("y")
+plt.title("Locally Weighted Regression")
+plt.legend()
+plt.show()

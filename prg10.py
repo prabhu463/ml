@@ -1,0 +1,23 @@
+# 10 K-Means Clustering
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_breast_cancer
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+
+X, _ = load_breast_cancer(return_X_y=True)
+X = StandardScaler().fit_transform(X)
+
+kmeans = KMeans(n_clusters=2)
+labels = kmeans.fit_predict(X)
+centers = kmeans.cluster_centers_
+
+# Plot
+plt.scatter(X[:, 0], X[:, 1], c=labels, cmap='viridis')
+plt.scatter(centers[:, 0], centers[:, 1], c='red', marker='x', s=200, label="Centroids")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.title("K-Means Clustering")
+plt.legend()
+plt.show()

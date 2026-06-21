@@ -1,0 +1,64 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import fetch_openml
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+
+
+# --- Linear Regression ---
+def linear_regression_boston():
+    boston = fetch_openml(name="boston", version=1, as_frame=True)
+    X = boston.data.to_numpy()
+    y = boston.target.to_numpy()
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    model = LinearRegression().fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+
+    print("MSE:", mean_squared_error(y_test, y_pred))
+    print("R2:", r2_score(y_test, y_pred))
+
+    plt.scatter(y_test, y_pred)
+    plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], 'r')
+    plt.xlabel("True Values")
+    plt.ylabel("Predicted Values")
+    plt.title("Linear Regression")
+    plt.show()
+
+
+# --- Polynomial Regression ---
+def polynomial_regression_auto_mpg():
+    auto = fetch_openml(name="autoMpg", version=1, as_frame=True)
+
+    data = auto.data.dropna(subset=["horsepower"])
+    X = data[["horsepower"]].astype(float)
+    y = auto.target.loc[data.index].astype(float)
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    poly = PolynomialFeatures(3)
+    X_train_p = poly.fit_transform(X_train)
+    X_test_p = poly.transform(X_test)
+
+    model = LinearRegression().fit(X_train_p, y_train)
+    y_pred = model.predict(X_test_p)
+
+    print("MSE:", mean_squared_error(y_test, y_pred))
+    print("R2:", r2_score(y_test, y_pred))
+
+    # Sort for smooth curve
+    idx = np.argsort(X_test.values.flatten())
+    plt.scatter(X_test, y_test)
+    plt.plot(X_test.values.flatten()[idx], y_pred[idx], 'r')
+    plt.xlabel("Horsepower")
+    plt.ylabel("MPG")
+    plt.title("Polynomial Regression")
+    plt.show()
+
+
+# Run
+linear_regression_boston()
+polynomial_regression_auto_mpg()

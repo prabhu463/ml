@@ -1,0 +1,39 @@
+# Program 2 (Correlation Matrix)
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+
+from sklearn.datasets import fetch_california_housing
+
+
+# Load dataset
+df = fetch_california_housing(as_frame=True).frame
+
+# Show sample data
+print("Dataset sample:")
+print(df.head())
+
+
+# Correlation matrix
+corr = df.corr()
+
+print("Correlation matrix:")
+print(corr)
+
+
+# Heatmap
+plt.figure(figsize=(10, 8))
+sns.heatmap(corr, annot=True, cmap="coolwarm")
+
+plt.title("Correlation Heatmap")
+plt.show()
+
+
+# Pairplot
+g = sns.pairplot(df, corner=True)
+
+g.fig.suptitle("Pairplot", y=1.02)
+
+plt.show()
